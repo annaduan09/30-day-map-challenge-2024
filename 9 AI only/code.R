@@ -67,6 +67,9 @@ roads <- tigris::roads("PA", county = c("Dauphin", "York", "Lancaster")) %>%
   st_crop(island_bbox) %>%
   erase_water(area_threshold = 0.1)
 
+pa <- counties("42") %>%
+  st_transform("EPSG:2272") 
+
 #### Data Prep ####
 # panel references
 left = as.numeric(island_bbox[1])
@@ -84,25 +87,47 @@ background <- data.frame(xmin = left,
                          ymax = top)
 
 #### Map ####
-ggplot() +
+# inset
+inset <- ggplot() +
+  geom_sf(data = st_union(pa), fill = "gray20", color = "transparent") +
+  geom_sf_text(data = st_union(pa) %>% st_centroid(), aes(label = "PA"), size = 8, color = "#9fbfba", family = "Arial") +
+  geom_sf(data = plant %>% st_buffer(30000), fill = "gold", color = "transparent") +
+  theme_void()
+
+# write png of inset 
+ggsave("img/inset.png", plot = inset, width = 3, height = 2, dpi = "retina")
+
+map <- 
+  ggplot() +
   geom_rect(data = background, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "#5dc3b9") +
   geom_sf(data = basemap, color = "transparent", fill = "#242121") +
   geom_sf(data = roads, color = "gray20") +
-  geom_sf(data = buildings, color = "gold", fill = "gold") +
-  geom_text(aes(label = str_wrap("Three Mile Island,", 38), x = right - x_range*0.05, y = top - y_range*0.05), size = 10, color = "#ee962f", family = "Big Caslon", hjust = 1) +
+  geom_sf(data = buildings, color = "transparent", fill = "gold") +
+  geom_text(aes(label = str_wrap("Three Mile Island,", 38), x = right - x_range*0.05, y = top - y_range*0.05), size = 11, color = "#ee962f", family = "Big Caslon", hjust = 1) +
   geom_text(aes(label = "site of the worst nuclear meltdown in US history,\n
                 will reopen in 2028 for 20-year deal with Microsoft.\n
                 Under this agreement, Microsoft will buy all power\n
-                generated to fuel its growing data centers.", x = right - x_range*0.05, y = top - y_range*0.1), size = 3, color = "#b2c3b8", family = "Arial", hjust = 1, lineheight = 0.5) +
-  geom_text(aes(label = "Opened in 1974, the plant continued\n
-to operate after its 1979 accident,\n
-closing for economic reasons in 2019.", x = right - x_range*0.4, y = bottom + y_range*0.6), size = 3, color = "#b2c3b8", family = "Arial", hjust = 0, lineheight = 0.5) +
-  geom_text(aes(label = "Anna Duan", x = left + x_range*0.05, y = bottom + y_range*0.08), size = 3, color = "#ee962f", family = "Arial", hjust = 0) +
-  geom_text(aes(label = "R Libraries: tigris, osmdata, tidyverse, sf, ggimage, extrafont", x = left + x_range*0.05, y = bottom + y_range*0.065), size = 3, color = "#b2c3b8", family = "Arial", hjust = 0) +
-  geom_text(aes(label = "Sources: openstreetmap.org", x = left + x_range*0.05, y = bottom + y_range*0.05), size = 3, color = "#b2c3b8", family = "Arial", hjust = 0) +
+                generated to fuel its growing data centers.", x = right - x_range*0.05, y = top - y_range*0.11), size = 3.3, color = "#9fbfba", family = "Arial", hjust = 1, lineheight = 0.65) +
+  geom_text(aes(label = "Opened in 1974, the two-unit plant closed\n
+Unit 2 after its 1979 meltdown. The\n
+plant closed officially for economic\n
+reasons in 2019.", x = right - x_range*0.4, y = bottom + y_range*0.51), size = 3.3, color = "#9fbfba", family = "Arial", hjust = 0, lineheight = 0.65) +
+  geom_text(aes(label = "Constellation Energy, the plant's owner,\n
+will revive Unit 1 and two cooling towers\n
+by 2028, supplying Microsoft enough\n
+power for 800k houses per year.", x = right - x_range*0.05, y = bottom + y_range*0.19), size = 3.3, color = "#9fbfba", family = "Arial", hjust = 1, lineheight = 0.65) +
+  geom_text(aes(label = "Anna Duan", x = left + x_range*0.05, y = bottom + y_range*0.08), size = 4, color = "#ee962f", family = "Arial", hjust = 0, alpha = 0.8) +
+  geom_text(aes(label = "R Libraries: tigris, osmdata, tidyverse, sf, ggimage, extrafont", x = left + x_range*0.05, y = bottom + y_range*0.065), size = 3, color = "#9fbfba", family = "Arial", hjust = 0, alpha = 0.8) +
+  geom_text(aes(label = "Sources: openstreetmap.org, Reuters, Constellation Energy", x = left + x_range*0.05, y = bottom + y_range*0.05), size = 3, color = "#9fbfba", family = "Arial", hjust = 0, alpha = 0.8) +
   
   geom_text(aes(label = "Susquehanna River", x = left + x_range*0.5, y = bottom + y_range*0.17), size = 5, color = "darkcyan", family = "Big Caslon", hjust = 1, angle = -35) +
+  geom_text(aes(label = "Three\nMile\nIsland", x = left + x_range*0.475, y = bottom + y_range*0.51), size = 3, color = "gold", family = "Big Caslon", hjust = 0.5) +
+  geom_text(aes(label = "HILL\nISLAND", x = left + x_range*0.17, y = bottom + y_range*0.85), size = 3, color = "#9fbfba", family = "Arial Narrow",  hjust = 0.5, alpha = 0.3) +
+  geom_text(aes(label = "SHELLEY\nISLAND", x = left + x_range*0.29, y = bottom + y_range*0.6), size = 3, color = "#9fbfba", family = "Arial Narrow", hjust = 0.5, alpha = 0.3) +
+  geom_text(aes(label = "YORK HAVEN, PA", x = left + x_range*0.25, y = bottom + y_range*0.12), size = 3, color = "#9fbfba", family = "Arial Narrow", hjust = 0.5, alpha = 0.3) +
+  geom_text(aes(label = "MIDDLETOWN, PA", x = left + x_range*0.7, y = bottom + y_range*0.7), size = 3, color = "#9fbfba", family = "Arial Narrow", hjust = 0.5, alpha = 0.3) +
+  geom_image(aes(x = right - x_range*0.18, y = bottom + y_range*0.08, image = "img/inset.png"), size = 0.15) +
   theme_void()
 
 # write png of map 
-ggsave("map.png", plot = map, width = 12, height = 10, dpi = "retina")
+ggsave("map.png", plot = map, width = 8, height = 12, dpi = "retina")
