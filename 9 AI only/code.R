@@ -116,7 +116,7 @@ reasons in 2019.", x = right - x_range*0.4, y = bottom + y_range*0.51), size = 3
 will revive Unit 1 and two cooling towers\n
 by 2028, supplying Microsoft enough\n
 power for 800k houses per year.", x = right - x_range*0.05, y = bottom + y_range*0.19), size = 3.3, color = "#9fbfba", family = "Arial", hjust = 1, lineheight = 0.65) +
-  geom_text(aes(label = "Anna Duan", x = left + x_range*0.05, y = bottom + y_range*0.08), size = 4, color = "#ee962f", family = "Arial", hjust = 0, alpha = 0.8) +
+  geom_text(aes(label = "Anna Duan", x = left + x_range*0.05, y = bottom + y_range*0.08), size = 3, color = "#ee962f", family = "Arial", hjust = 0, alpha = 0.8) +
   geom_text(aes(label = "R Libraries: tigris, osmdata, tidyverse, sf, ggimage, extrafont", x = left + x_range*0.05, y = bottom + y_range*0.065), size = 3, color = "#9fbfba", family = "Arial", hjust = 0, alpha = 0.8) +
   geom_text(aes(label = "Sources: openstreetmap.org, Reuters, Constellation Energy", x = left + x_range*0.05, y = bottom + y_range*0.05), size = 3, color = "#9fbfba", family = "Arial", hjust = 0, alpha = 0.8) +
   
@@ -127,6 +127,7 @@ power for 800k houses per year.", x = right - x_range*0.05, y = bottom + y_range
   geom_text(aes(label = "YORK HAVEN, PA", x = left + x_range*0.25, y = bottom + y_range*0.12), size = 3, color = "#9fbfba", family = "Arial Narrow", hjust = 0.5, alpha = 0.3) +
   geom_text(aes(label = "MIDDLETOWN, PA", x = left + x_range*0.7, y = bottom + y_range*0.7), size = 3, color = "#9fbfba", family = "Arial Narrow", hjust = 0.5, alpha = 0.3) +
   geom_image(aes(x = right - x_range*0.18, y = bottom + y_range*0.08, image = "img/inset.png"), size = 0.15) +
+  geom_image(aes(x = left + x_range*0.13, y = bottom + y_range*0.27, image = "img/hazmat.png"), size = 0.4) +
   theme_void()
 
 # write png of map 
